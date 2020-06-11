@@ -1,0 +1,27 @@
+<script>
+  function toggleMenu(){
+    document.getElementById("navbarMenu").classList.toggle('is-active');
+  }
+</script>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="" href="/">
+      <img src="/images/logo.png" >
+    </a>
+
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu" onclick="toggleMenu()">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarMenu" class="navbar-menu">
+    <div class="navbar-start">
+      <div class="navbar-item">
+        <a href='/items'>Items</a>
+      </div>
+    </div>
+  </nav>
+  

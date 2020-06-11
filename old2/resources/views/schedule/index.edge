@@ -1,0 +1,12 @@
+@layout('master')
+
+@section('content')
+  <div id="app"></div>
+  <link rel='stylesheet' href='/build/schedule.css'>
+  <script defer src='/build/schedule.js'></script>
+
+  <script>
+    let csrf = '{{ csrfToken }}';
+  </script>
+  
+@endsection

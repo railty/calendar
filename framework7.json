@@ -1,0 +1,26 @@
+{
+  "cwd": "/home/sning/ex-f7",
+  "type": [
+    "web"
+  ],
+  "name": "ex",
+  "framework": "svelte",
+  "template": "tabs",
+  "cssPreProcessor": "scss",
+  "bundler": "webpack",
+  "webpack": {
+    "developmentSourceMap": true,
+    "productionSourceMap": true,
+    "hashAssets": false,
+    "preserveAssetsPaths": false,
+    "inlineAssets": true
+  },
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false
+}

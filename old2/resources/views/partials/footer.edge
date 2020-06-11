@@ -1,0 +1,42 @@
+<nav class="navbar is-fixed-bottom">
+  <div class="navbar-start">
+    <div class="navbar-item notification" id="notification">
+      Ready
+    </div>
+  </div>    
+
+  <div class="navbar-end">
+    <a class="navbar-item">
+      2020.02.27
+    </a>
+  </div>
+</nav>
+
+<script>
+  //code can be "primary, info, success, warning, danger"
+  function notify(code, message, timeout, callback){
+    let divNotification = document.getElementById("notification");
+    //unescape to text
+    message = message.replace(/&#(\\d+);/g, (match, dec) => String.fromCharCode(dec) );
+    divNotification.innerText = message;
+    divNotification.classList.add('is-' + code);
+    timeout = timeout || 3;
+    setTimeout(()=>{
+      divNotification.innerText = "Ready";
+      divNotification.classList.remove('is-' + code);
+      if (callback) callback();
+    }, timeout*1000);
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){ 
+    @if(flashMessage('notification'))
+      @if(flashMessage('notification.timeout'))
+        let timeout = {{flashMessage('notification.timeout')}};
+      @else
+        let timeout = 3;
+      @endif
+
+      notify("{{ flashMessage('notification.type') }}", "{{ flashMessage('notification.message') }}", timeout );
+    @endif
+  }, false);
+</script>
