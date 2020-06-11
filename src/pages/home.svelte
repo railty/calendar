@@ -12,7 +12,7 @@
 
   <!-- Page content -->
   <Block strong>
-    <p>This is an example of tabs-layout application. The main point of such tabbed layout is that each tab contains independent view with its own routing and navigation.</p>
+    <p id="example">This is an example of tabs-layout application. The main point of such tabbed layout is that each tab contains independent view with its own routing and navigation.</p>
 
     <p>Each tab/view may have different layout, different navbar type (dynamic, fixed or static) or without navbar like this tab.</p>
   </Block>
@@ -81,3 +81,9 @@
     Button
   } from 'framework7-svelte';
 </script>
+
+<style>
+#example {
+  background-color: red
+}
+</style>

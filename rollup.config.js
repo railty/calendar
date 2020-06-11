@@ -3,7 +3,8 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
-import scss from 'rollup-plugin-scss';
+//import scss from 'rollup-plugin-scss';
+import css from "rollup-plugin-css-only";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -16,6 +17,7 @@ export default ['item'].map((name, index) => ({
 		file: `public/build/${name}.js`
 	},
 	plugins: [
+		css({ output: "public/build/extra.css" }),		
 		svelte({
 			// enable run-time checks when not in production
 			dev: !production,
@@ -33,7 +35,7 @@ export default ['item'].map((name, index) => ({
 				handler(warning);
 			}
 		}),
-		scss(),
+		//scss(),
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In
 		// some cases you'll need additional configuration —
