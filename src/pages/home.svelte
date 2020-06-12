@@ -6,65 +6,49 @@
     </NavLeft>
     <NavTitle sliding>ex</NavTitle>
     <NavRight>
-      <Link iconIos="f7:menu" iconAurora="f7:menu" iconMd="material:menu" panelOpen="right" />
+      <Link iconIos="f7:menu" iconAurora="f7:menu" iconMd="material:menu" panelOpen="right" >
+        <Badge color="red">1</Badge>
+       </Link>
     </NavRight>
   </Navbar>
 
   <!-- Page content -->
-  <Block strong>
-    <p id="example">This is an example of tabs-layout application. The main point of such tabbed layout is that each tab contains independent view with its own routing and navigation.</p>
+  <Datepicker 
+    start={start}  
+    end={end} 
+    
+    bind:formattedSelected={formattedSelected}
+    bind:selected={selected}
+    bind:dateChosen={dateChosen}	
 
-    <p>Each tab/view may have different layout, different navbar type (dynamic, fixed or static) or without navbar like this tab.</p>
-  </Block>
+    selectableCallback={selectableCallback}
+    format={'#{Y}-#{m}-#{d}'}
+    daysOfWeek={daysOfWeek}
+  />
 
-  <BlockTitle>Navigation</BlockTitle>
-  <List>
-    <ListItem link="/about/" title="About"/>
-    <ListItem link="/form/" title="Form"/>
-  </List>
-
-  <BlockTitle>Modals</BlockTitle>
-  <Block strong>
-    <Row>
-      <Col width="50">
-        <Button fill raised popupOpen="#my-popup">Popup</Button>
-      </Col>
-      <Col width="50">
-        <Button fill raised loginScreenOpen="#my-login-screen">Login Screen</Button>
-      </Col>
+  {#each hours as hour}
+    <Row tag="p">
+      {#each hour as period}
+        <Col>
+          <Button fill color={colors[period.state]} outline on:click={()=>{click(period)}}>{period.tm.format("HH:mmA")}</Button>
+        </Col> 
+      {/each}
     </Row>
-  </Block>
+  {/each}
 
-  <BlockTitle>Panels</BlockTitle>
-  <Block strong>
-    <Row>
-      <Col width="50">
-        <Button fill raised panelOpen="left">Left Panel</Button>
-      </Col>
-      <Col width="50">
-        <Button fill raised panelOpen="right">Right Panel</Button>
-      </Col>
-    </Row>
-  </Block>
+  <h2>formattedSelected = {formattedSelected}</h2>
+  <h2>selected = {selected}</h2>
+  <h2>dateChosen = {dateChosen}</h2>
 
-  <List>
-    <ListItem
-      title="Dynamic (Component) Route"
-      link="/dynamic-route/blog/45/post/125/?foo=bar#about"
-    />
-    <ListItem
-      title="Default Route (404)"
-      link="/load-something-that-doesnt-exist/"
-    />
-    <ListItem
-      title="Request Data & Load"
-      link="/request-and-load/user/123456/"
-    />
-  </List>
+  <Button fill color="red" on:click={test}>
+    <span class="blinking">test</span>
+  </Button>
+
 </Page>
 <script>
   import {
     Page,
+    Badge,
     Navbar,
     NavLeft,
     NavTitle,
@@ -80,10 +64,127 @@
     Col,
     Button
   } from 'framework7-svelte';
+	import Datepicker from '../components/Datepicker.svelte';
+	import moment from 'moment';
+
+	//month start from 0, ie Jan is 0
+	let start = new Date(2020, 0, 1);
+	let end = new Date(2020, 5, 30);
+
+	let formattedSelected;
+	let selected = new Date(2020, 3, 27);;
+	let dateChosen;
+
+	let daysOfWeek_cn = [
+		['Sunday', 'æ—¥'],
+		['Monday', 'ä¸€'],
+		['Tuesday', 'äºŒ'],
+		['Wednesday', 'ä¸‰'],
+		['Thursday', 'å››'],
+		['Friday', 'äº”'],
+		['Saturday', 'å…­']
+	];
+
+	let daysOfWeek = [
+		['Sunday', 'Sun'],
+		['Monday', 'Mon'],
+		['Tuesday', 'Tue'],
+		['Wednesday', 'Wed'],
+		['Thursday', 'Thu'],
+		['Friday', 'Fri'],
+		['Saturday', 'Sat']
+	];
+
+	function selectableCallback(dt){
+		if (dt.getDay() == 0) return false;
+		return true;
+	}
+
+	let tmStart = moment('2020-04-01 08:00AM', "YYYY-MM-DD hh:mmA");
+	//console.log(tmStart.toString());
+
+	let tmEnd = moment('2020-04-01 06:00PM', "YYYY-MM-DD hh:mmA");
+	//console.log(tmEnd.toString());
+
+	let tm = tmStart;
+	let hours = [];
+	let hour = [];
+	let periodLen = 30; //minutes
+	let ct = 4; //how many period in a row
+	
+	while (tm.valueOf() < tmEnd.valueOf()){
+		hour.push({
+			tm: tm.clone(),
+			len: periodLen,
+			state: 'available'	//booking, booked
+		});
+
+		if (hour.length == ct){
+			hours.push(hour);
+			hour = [];
+		}
+		tm.add(periodLen, "minutes")
+	}
+	if (hour.length > 0) hours.push(hour);
+
+	let colors = {
+		'available': 'lightgreen',
+		'booking': 'lightblue', 
+		'booked': 'blue'
+	};
+
+	function click(period){
+		if (period.state == "booking") period.state = "available";
+		else if (period.state == "available") period.state = "booking";
+		hours = hours;
+	}
+
+	function test(){
+		let bookings = hours.flat().filter((p)=>{return p.state=='booking'});
+		bookings = bookings.reduce((last, current)=>{
+			if (last.length > 0){
+				let l = last[last.length-1];
+				let t = l.tm.clone();
+
+				t.add(l.len, "minutes");
+
+				let a = t.valueOf();
+				let b = current.tm.valueOf();
+				if ( a == b){
+					l.len = l.len + current.len;
+					return last;					
+				}
+			}
+
+			last.push({
+				tm: current.tm.clone(),
+				len: current.len,
+			});
+
+			return last;
+		}, []);
+
+
+		console.log("------------------");
+		for (let b of bookings){
+			console.log(`booking: ${b.tm.format("HH:mmA")} for ${b.len} minutes`);
+		}
+		
+	}
+
 </script>
 
 <style>
-#example {
-  background-color: red
+
+.blinking{
+    animation:blinkingText 1.2s infinite;
 }
+@keyframes blinkingText{
+    0%{     color: #000;    }
+    49%{    color: #000; }
+    60%{    color: transparent; }
+    99%{    color:transparent;  }
+    100%{   color: #000;    }
+}
+
 </style>
