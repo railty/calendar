@@ -12,6 +12,42 @@
     </NavRight>
   </Navbar>
 
+	{#if state=="welcome"}
+		<BlockTitle>Welcome to {agency} online booking</BlockTitle>
+		<Card>
+			<CardHeader>Please select the service</CardHeader>
+			<CardContent>
+				<List>
+ 					<ListItem title="Service" 
+						smartSelect 
+						smartSelectParams={{
+							openIn: 'popup', 
+							searchbar: true, 
+							searchbarPlaceholder: 'Search car',
+							on: {closed: function(){selectedServices = this.getValue();}}
+						}}>
+      					<select name="Service" multiple value={selectedServices}>
+						  	{#each services as serviceGroup}
+							  	{#if serviceGroup.group}
+									<optgroup label={serviceGroup.group}>
+										{#each serviceGroup.list as service}
+											<option value={service.value}>{service.name}</option>
+										{/each}
+									</optgroup>
+								{:else}
+									{#each serviceGroup.list as service}
+										<option value={service.value}>{service.name}</option>
+									{/each}
+								{/if}
+							{/each}
+      					</select>
+ 					</ListItem>
+
+				</List>
+			</CardContent>
+			<CardFooter>{selectedServices}</CardFooter>
+		</Card>
+	{/if}
   <!-- Page content -->
   <Datepicker 
     start={start}  
@@ -46,27 +82,136 @@
 
 </Page>
 <script>
-  import {
-    Page,
-    Badge,
-    Navbar,
-    NavLeft,
-    NavTitle,
-    NavTitleLarge,
-    NavRight,
-    Link,
-    Toolbar,
-    Block,
-    BlockTitle,
-    List,
-    ListItem,
-    Row,
-    Col,
-    Button
-  } from 'framework7-svelte';
+	import {
+		Page,
+		Badge,
+		Navbar,
+		NavLeft,
+		NavTitle,
+		NavTitleLarge,
+		NavRight,
+		Link,
+		Toolbar,
+		Block,
+		BlockTitle,
+		List,
+		ListItem,
+		Row,
+		Col,
+		Card, CardHeader, CardContent, CardFooter,
+		Button
+	} from 'framework7-svelte';
 	import Datepicker from '../components/Datepicker.svelte';
 	import moment from 'moment';
 
+	let agency = "ABC";
+	
+	let services = [{
+		group: null,
+		list: [
+			{
+				name: 'RMT Massage',
+				value: 'RMT Massage'
+			}, 			
+			{
+				name: 'IonCleanse Foot Detox Bath',
+				value: 'IonCleanse Foot Detox Bath'
+			},			
+			{
+				name: 'Introductory Offer',
+				value: 'Introductory Offer'
+			},			
+			{
+				name: 'Membership Benefit Program',
+				value: 'Membership Benefit Program'
+			},
+			{
+				name: 'Other',
+				value: 'Other'
+			}]
+	}]
+	let selectedServices = [];
+	/*
+	let services = [
+		{
+			group: "Japanese", 
+			list: [
+				{
+					value: 'honda',
+					name: 'Honda'
+				},
+				{
+					value: 'lexus', 
+					name: 'Lexus'
+				},
+				{
+					value: 'mazda',
+					name: 'Mazda'
+				},
+				{
+					value: 'nissan',
+					name: 'Nissan'
+				},
+				{
+					value: 'toyota',
+					name: 'Toyota'
+				},																
+			]
+		},
+		{
+			group: "German", 
+			list: [
+				{
+					value: 'audi',
+					name: 'Audi'
+				},
+				{
+					value: 'bmw', 
+					name: 'BMW'
+				},
+				{
+					value: 'mercedes',
+					name: 'Mercedes'
+				},
+				{
+					value: 'vw',
+					name: 'Volkswagen'
+				},
+				{
+					value: 'volvo',
+					name: 'Volvo'
+				},																
+			]
+		},
+		{
+			group: "American", 
+			list: [
+				{
+					value: 'honda',
+					name: 'Honda'
+				},
+				{
+					value: 'cadillac', 
+					name: 'Cadillac'
+				},
+				{
+					value: 'chrysler',
+					name: 'Chrysler'
+				},
+				{
+					value: 'dodge',
+					name: 'Dodge'
+				},
+				{
+					value: 'ford',
+					name: 'Ford'
+				},																
+			]
+		},				
+	];
+	let selectedServices = ['honda', 'audi', 'ford'];
+	*/
+	let state = "welcome";
 	//month start from 0, ie Jan is 0
 	let start = new Date(2020, 0, 1);
 	let end = new Date(2020, 5, 30);
@@ -132,6 +277,19 @@
 		'booking': 'lightblue', 
 		'booked': 'blue'
 	};
+
+	function click1(){
+		console.log("111");
+	}
+	function click2(){
+		console.log("222");
+	}
+	function click3(){
+		console.log("333");
+	}
+	function click4(){
+		console.log("444");
+	}
 
 	function click(period){
 		if (period.state == "booking") period.state = "available";
